@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>⚡ ZeusVPN — مدیریت کانفیگ V2Ray · Happ · V2Box</title>
+<meta name="description" content="ZeusVPN — مدیر کانفیگ با تم بنفش: ایمپورت vmess/vless/trojan/ss/hysteria2/tuic، تست اتصال، QR و ارسال مستقیم به Happ، V2Box و v2rayNG">
+<meta name="theme-color" content="#7c3aed">
+<meta property="og:title" content="⚡ ZeusVPN">
+<meta property="og:description" content="مدیر کانفیگ V2Ray / Happ / V2Box با تم بنفش زئوس">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <a class="brand" href="./">
+      <img class="bicon" src="icons/icon-192.png" alt="ZeusVPN">
+      <b>Zeus<span>VPN</span></b>
+    </a>
+    <div class="live-chip"><span class="dot"></span><span id="hdStat">آماده⚡</span></div>
+  </header>
+
+  <section class="hero">
+    <img class="bigicon" src="icons/icon-512.png" alt="ZeusVPN">
+    <h1>Zeus<span>VPN</span></h1>
+    <p>قدرت زئوس در کف دستت — ایمپورت و مدیریت کانفیگ، تست اتصال، ارسال مستقیم به اپ‌ها</p>
+    <div class="pb">
+      <span class="pbadge">V2Ray / Xray</span><span class="pbadge">Happ</span>
+      <span class="pbadge">V2Box</span><span class="pbadge">v2rayNG</span><span class="pbadge">Hiddify</span>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stat"><div class="num" id="stTotal">0</div><div class="lbl">کانفیگ</div></div>
+    <div class="stat"><div class="num" id="stOnline">0</div><div class="lbl">آنلاین</div></div>
+    <div class="stat"><div class="num" id="stProtos">0</div><div class="lbl">پروتکل</div></div>
+  </section>
+
+  <!-- Import -->
+  <section class="card">
+    <h2><span class="em">📥</span> افزودن کانفیگ</h2>
+    <div class="tabs">
+      <button class="tab active" data-tab="links">🔗 لینک کانفیگ</button>
+      <button class="tab" data-tab="sub">📡 اشتراک (URL)</button>
+      <button class="tab" data-tab="b64">🔤 Base64</button>
+    </div>
+
+    <div id="pane-links" class="pane">
+      <textarea id="taLinks" placeholder="لینک‌های کانفیگ را اینجا بچسبان (هر خط یکی):
+vmess://...
+vless://...
+trojan://...
+ss://...
+hysteria2://..."></textarea>
+      <div class="row" style="margin-top:12px">
+        <button class="btn primary" id="btnAdd">⚡ افزودن کانفیگ‌ها</button>
+        <input type="file" id="fileImport" accept=".txt,.conf,.json,text/plain" hidden>
+        <button class="btn ghost" id="btnFile">📄 از فایل</button>
+      </div>
+    </div>
+
+    <div id="pane-sub" class="pane" hidden>
+      <div class="row">
+        <input type="url" id="inSub" placeholder="https://example.com/sub">
+        <button class="btn primary" id="btnSub">📡 دریافت اشتراک</button>
+      </div>
+      <p style="color:var(--dim);font-size:.82rem;margin-top:10px;line-height:1.9">
+        اگر سرور اشتراک اجازه‌ی دسترسی مستقیم (CORS) ندهد، به‌صورت خودکار از پروکسی کمکی استفاده می‌شود؛
+        در بدترین حالت لینک را در مرورگر باز کن، متن را کپی کن و در تب «لینک کانفیگ» بچسبان.
+      </p>
+    </div>
+
+    <div id="pane-b64" class="pane" hidden>
+      <textarea id="taB64" placeholder="متن Base64 اشتراک را اینجا بچسبان..."></textarea>
+      <div class="row" style="margin-top:12px">
+        <button class="btn primary" id="btnB64">🔓 رمزگشایی و افزودن</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toolbar -->
+  <section class="card">
+    <h2><span class="em">🛠</span> ابزارها</h2>
+    <div class="toolbar">
+      <button class="btn primary" id="btnTestAll">📶 تست همه</button>
+      <button class="btn ghost" id="btnExpSub">📤 خروجی اشتراک</button>
+      <button class="btn ghost" id="btnExpJson">🧾 خروجی JSON</button>
+      <div class="spacer"></div>
+      <input type="text" class="filterbox" id="inFilter" placeholder="🔍 جستجو...">
+      <button class="btn danger" id="btnClear">🗑 پاک‌سازی همه</button>
+    </div>
+  </section>
+
+  <!-- Servers -->
+  <section class="card">
+    <h2><span class="em">🖥</span> سرورهای من</h2>
+    <div class="servers" id="srvList"></div>
+    <div class="empty" id="emptyState">
+      <span class="z">⚡</span>
+      <p>هنوز کانفیگی اضافه نشده — از بخش «افزودن کانفیگ» شروع کن</p>
+    </div>
+  </section>
+
+  <!-- Android guide -->
+  <section class="card">
+    <h2><span class="em">🤖</span> راهنمای اندروید</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="n">۱</div>
+        <h3>نصب ZeusVPN روی گوشی</h3>
+        <p>این صفحه را با <b>Chrome اندروید</b> باز کن → منوی سه‌نقطه → <b>«Add to Home screen»</b>. حالا ZeusVPN مثل یک اپ واقعی روی گوشی‌ات نصب می‌شود (PWA).</p>
+      </div>
+      <div class="step">
+        <div class="n">۲</div>
+        <h3>نصب کلاینت اتصال</h3>
+        <p>کانفیگ‌ها را با یک کلاینت واقعی اجرا کن:
+          <a href="https://github.com/Happ-proxy/happ-android/releases" target="_blank" rel="noopener">Happ</a> ·
+          <a href="https://github.com/2dust/v2rayNG/releases" target="_blank" rel="noopener">v2rayNG</a> ·
+          <a href="https://play.google.com/store/apps/details?id=dev.hexasoftware.v2box" target="_blank" rel="noopener">V2Box</a> ·
+          <a href="https://github.com/hiddify/hiddify-app/releases" target="_blank" rel="noopener">Hiddify</a>
+        </p>
+      </div>
+      <div class="step">
+        <div class="n">۳</div>
+        <h3>ارسال کانفیگ به اپ</h3>
+        <p>روی هر سرور دکمه <b>QR</b> را بزن و با اپ اسکن کن، یا از دکمه‌های Happ / V2Box / v2rayNG / Hiddify استفاده کن تا کانفیگ مستقیم داخل اپ باز شود. اتصال نهایی توسط خود اپ انجام می‌شود.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    ⚡ ZeusVPN — مدیریت کانفیگ شخصی · این صفحه هیچ سروری ارائه نمی‌دهد و فقط کانفیگ‌های خودت را مدیریت و به کلاینت‌ها منتقل می‌کند.<br>
+    ساخت‌شده با 💜 — قوانین محل زندگی‌ات را رعایت کن.
+  </footer>
+</div>
+
+<!-- QR Modal -->
+<div class="modal" id="qrModal">
+  <div class="box">
+    <h3 id="qrTitle">اشتراک‌گذاری کانفیگ</h3>
+    <div id="qrbox"></div>
+    <div class="applinks" id="appLinks"></div>
+    <div class="row" style="margin-top:14px;justify-content:center">
+      <button class="btn ghost" id="btnCopyRaw">📋 کپی لینک</button>
+      <button class="btn primary" id="btnCloseModal">بستن</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="qrcode.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
