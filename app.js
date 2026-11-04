@@ -256,7 +256,7 @@ function subDeepLinks(url){
 }
 function toOutbound(s){
   const stream = { network: s.net === 'udp' ? 'tcp' : (s.net || 'tcp'), security: s.tls === 'tls' ? 'tls' : 'none' };
-  if (s.tls === 'tls') stream.tlsSettings = { allowInsecure:true, serverName: s.sni || s.host, ...(s.fp ? { fingerprint: s.fp } : {}) };
+  if (s.tls === 'tls') stream.tlsSettings = { allowInsecure:false, serverName: s.sni || s.host, ...(s.fp ? { fingerprint: s.fp } : {}) };
   if (stream.network === 'ws') stream.wsSettings = { path: s.path || '/', ...(s.hostHeader ? { headers:{ Host: s.hostHeader } } : {}) };
   if (stream.network === 'grpc') stream.grpcSettings = { serviceName: s.path || '' };
   const base = { tag: s.name || s.proto, streamSettings: stream };
